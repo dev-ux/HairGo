@@ -1,9 +1,14 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Welcome({ navigation }) {
   return (
     <View style={styles.container}>
+      <Image source={require('../assets/welcome.jpg')} style={styles.backgroundImage} />
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Onboarding3')}>
+        <Ionicons name="arrow-back" size={24} color="#fff" />
+      </TouchableOpacity>
       <Image source={require('../assets/logo.png')} style={styles.image} />
       <Text style={styles.title}>Bienvenue à</Text>
       <Text style={styles.logoText}>HairGo</Text>
@@ -23,12 +28,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     padding: 20,
   },
-  image: {
+  backgroundImage: {
     position: 'absolute',
     width: '100%',
     height: '100%',
     top: 0,
+    left: 20,
     opacity: 0.4,
+  },
+  image: {
+    width: 150,
+    height: 150,
+    marginBottom: 20,
+    alignSelf: 'center',
+    marginTop: 50,
+  },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 40,
+    padding: 10,
   },
   title: {
     fontSize: 22,

@@ -5,7 +5,7 @@ export default function Onboarding1({ navigation }) {
   return (
     <View style={styles.container}>
       <Image
-        source={{ uri: '../assets/onboarding3.jpg' }} // Remplace par une vraie image ou utilise `require()`
+        source={require('../assets/onboarding1.jpg')}
         style={styles.image}
       />
       <Text style={styles.text}>Trouvez facilement des barbiers et des salons de coiffure à portée de main.</Text>
@@ -21,21 +21,21 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
+    backgroundColor: '#000',
     padding: 20,
-    backgroundColor: '#fff'
   },
   image: {
-    width: '100%',
-    height: '70%',
-    resizeMode: 'cover',
     position: 'absolute',
+    width: '100%',
+    height: '100%',
     top: 0,
+    opacity: 0.4,
   },
   text: {
     fontSize: 18,
+    color: '#fff',
     textAlign: 'center',
-    marginBottom: 20,
-    color: '#000',
+    marginBottom: 30,
   },
   button: {
     backgroundColor: '#3366FF',

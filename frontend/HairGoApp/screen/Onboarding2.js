@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Onboarding2({ navigation }) {
   return (
@@ -8,10 +9,10 @@ export default function Onboarding2({ navigation }) {
         source={require('../assets/onboarding2.jpg')}
         style={styles.image}
       />
-      <Text style={styles.text}>Découvrez les meilleurs barbiers et salons près de chez vous.</Text>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Onboarding1')}>
-        <Text style={styles.buttonText}>Retour</Text>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Onboarding1')}>
+        <Ionicons name="arrow-back" size={24} color="#fff" />
       </TouchableOpacity>
+      <Text style={styles.text}>Découvrez les meilleurs barbiers et salons près de chez vous.</Text>
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Onboarding3')}>
         <Text style={styles.buttonText}>Suivant</Text>
       </TouchableOpacity>
@@ -34,6 +35,12 @@ const styles = StyleSheet.create({
     top: 0,
     opacity: 0.4,
   },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 20,
+    padding: 10,
+  },
   text: {
     fontSize: 18,
     color: '#fff',
@@ -44,7 +51,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#3366FF',
     padding: 15,
     borderRadius: 10,
-    marginBottom: 10,
+    marginBottom: 60,
     width: '100%',
     alignItems: 'center',
   },
