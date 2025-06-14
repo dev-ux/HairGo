@@ -46,9 +46,9 @@ export default function Signup({ navigation }) {
 
       <TouchableOpacity
         style={styles.linkButton}
-        onPress={() => navigation.navigate('Login')}
+        onPress={() => navigation.navigate('Formulaire')}
       >
-        <Text style={styles.linkText}>Connectez-vous avec un mot de passe</Text>
+        <Text style={styles.linkText}>Remplissez le formulaire</Text>
       </TouchableOpacity>
 
       <Text style={styles.footerText}>

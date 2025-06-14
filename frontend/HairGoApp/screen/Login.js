@@ -68,7 +68,9 @@ export default function Login({ navigation }) {
 
       <Text style={styles.footerText}>
         Vous avez déjà un compte ?{' '}
-        <Text style={styles.footerLink}>Connectez-vous</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+          <Text style={styles.footerLink}>inscrivez-vous</Text>
+        </TouchableOpacity>
       </Text>
     </View>
   );
