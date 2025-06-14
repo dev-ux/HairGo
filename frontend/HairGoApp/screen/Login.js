@@ -55,7 +55,7 @@ export default function Login({ navigation }) {
       const { token, user } = response.data;
       await AsyncStorage.setItem('userToken', token);
       await AsyncStorage.setItem('userInfo', JSON.stringify(user));
-      navigation.replace('Welcome');
+      navigation.replace('Home');
     } catch (error) {
       console.error('Erreur de connexion:', error);
       console.error('Message d\'erreur:', error.response?.data?.message);

@@ -155,6 +155,31 @@ The admin panel allows complete service management including:
 
 We plan to incentivize hairdressers for recharges, offering bonuses for larger amounts.
 
+## Architecture
+
+Le projet est composé de deux parties principales :
+
+### Frontend (React Native)
+L'application mobile permet aux utilisateurs d'interagir avec l'application.
+
+### Backend (Node.js/Express)
+L'API REST qui gère les données et la logique métier.
+
+## Stockage
+
+Le projet utilise un NAS Synology pour le stockage des données médias :
+- Images des utilisateurs
+- Photos des barbiers
+- Documents associés
+
+Le chemin de montage du NAS est configuré dans le fichier `.env` :
+```bash
+SYNOLOGY_STORAGE=/Volumes/HairGo/uploads
+SYNOLOGY_HOST=198.168.1.10
+SYNOLOGY_USER=kassi
+SYNOLOGY_PASSWORD=6Y8R'uLs
+```
+
 ## How to Launch the Project
 
 ### Prerequisites

@@ -12,6 +12,21 @@ const synologyStorage = require('./services/synologyStorage');
 
 const app = express();
 
+// Fonction pour vérifier le JWT
+const verifyToken = (req, res, next) => {
+  const token = req.headers['authorization'];
+  if (!token) {
+    return res.status(403).json({ message: 'Aucun token fourni' });
+  }
+  try {
+    const decoded = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.status(401).json({ message: 'Token invalide' });
+  }
+};
+
 // Fonction pour charger les utilisateurs depuis le fichier
 const loadUsers = () => {
   try {
@@ -65,22 +80,65 @@ app.listen(PORT, () => {
   console.log(`Serveur en cours d'exécution sur le port ${PORT}`);
 });
 
-// Fonction pour vérifier le JWT
-const verifyToken = (req, res, next) => {
-  const token = req.headers['authorization'];
-  if (!token) {
-    return res.status(403).json({ message: 'Aucun token fourni' });
-  }
+// Route pour lister les barbiers
+app.get('/api/barbers', verifyToken, async (req, res) => {
   try {
-    const decoded = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch (err) {
-    return res.status(401).json({ message: 'Token invalide' });
-  }
-};
+    // Pour l\'instant, on simule les données avec des barbiers test
+    const barbers = [
+      {
+        id: '1',
+        nom: 'Dupont',
+        prenom: 'Jean',
+        specialite: 'Barbier expert en coupes modernes',
+        ville: 'Paris',
+        note_moyenne: 4.5,
+        nb_avis: 123,
+        avatar: 'https://via.placeholder.com/150',
+        description: 'Barbier passionné avec plus de 10 ans d\'expérience',
+        services: ['Coupe classique', 'Barbe', 'Dégradé'],
+        prix_moyen: 35,
+        horaires: {
+          lundi: '9h-18h',
+          mardi: '9h-18h',
+          mercredi: '9h-18h',
+          jeudi: '9h-18h',
+          vendredi: '9h-18h',
+          samedi: '9h-17h',
+          dimanche: 'Fermé'
+        }
+      },
+      {
+        id: '2',
+        nom: 'Martin',
+        prenom: 'Pierre',
+        specialite: 'Barbier spécialiste en barbes',
+        ville: 'Lyon',
+        note_moyenne: 4.8,
+        nb_avis: 89,
+        avatar: 'https://via.placeholder.com/150',
+        description: 'Artisan barbier avec une approche artistique',
+        services: ['Barbe artistique', 'Coupe moderne', 'Tondeuse'],
+        prix_moyen: 40,
+        horaires: {
+          lundi: '10h-19h',
+          mardi: '10h-19h',
+          mercredi: '10h-19h',
+          jeudi: '10h-19h',
+          vendredi: '10h-19h',
+          samedi: '10h-18h',
+          dimanche: 'Fermé'
+        }
+      }
+    ];
 
-// Routes
+    res.json(barbers);
+  } catch (error) {
+    console.error('Erreur lors de la récupération des barbiers:', error);
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+});
+
+// Route d'inscription
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { email, password, nom, prenom, dateNaissance, telephone, indicatif, genre } = req.body;
@@ -128,6 +186,7 @@ app.post('/api/auth/register', async (req, res) => {
   }
 });
 
+// Route de connexion
 app.post('/api/auth/login', async (req, res) => {
   try {
     console.log('Requête de connexion reçue:', req.body);

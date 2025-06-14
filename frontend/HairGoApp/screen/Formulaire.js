@@ -110,8 +110,8 @@ export default function Formulaire({ navigation }) {
       await AsyncStorage.setItem('userToken', token);
       await AsyncStorage.setItem('userInfo', JSON.stringify(user));
 
-      // Rediriger vers la page de connexion
-      navigation.replace('Login');
+      // Rediriger vers la page Home
+      navigation.replace('Home');
     } catch (error) {
       console.error('Erreur d\'inscription:', error);
       Alert.alert('Erreur', error.response?.data?.message || 'Erreur lors de l\'inscription');
