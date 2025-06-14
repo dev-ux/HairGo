@@ -7,21 +7,74 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as ImagePicker from 'expo-image-picker';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Formulaire({ navigation }) {
   const [formData, setFormData] = useState({
     nom: '',
     prenom: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
     dateNaissance: '',
     telephone: '',
     indicatif: '+33',
     genre: '',
     avatar: null,
   });
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const validateForm = () => {
+    if (!formData.nom.trim()) {
+      Alert.alert('Erreur', 'Le nom est requis');
+      return false;
+    }
+    if (!formData.prenom.trim()) {
+      Alert.alert('Erreur', 'Le prénom est requis');
+      return false;
+    }
+    if (!formData.email.trim()) {
+      Alert.alert('Erreur', 'Lemail est requis');
+      return false;
+    }
+    if (!formData.password.trim()) {
+      Alert.alert('Erreur', 'Le mot de passe est requis');
+      return false;
+    }
+    if (!formData.confirmPassword.trim()) {
+      Alert.alert('Erreur', 'La confirmation du mot de passe est requise');
+      return false;
+    }
+    if (formData.password !== formData.confirmPassword) {
+      Alert.alert('Erreur', 'Les mots de passe ne correspondent pas');
+      return false;
+    }
+    if (formData.password.length < 6) {
+      Alert.alert('Erreur', 'Le mot de passe doit contenir au moins 6 caractères');
+      return false;
+    }
+    if (!formData.dateNaissance) {
+      Alert.alert('Erreur', 'La date de naissance est requise');
+      return false;
+    }
+    if (!formData.telephone.trim()) {
+      Alert.alert('Erreur', 'Le numéro de téléphone est requis');
+      return false;
+    }
+    if (!formData.genre) {
+      Alert.alert('Erreur', 'Le genre est requis');
+      return false;
+    }
+    return true;
+  };
 
   const handleInputChange = (field, value) => {
     setFormData({
@@ -41,9 +94,30 @@ export default function Formulaire({ navigation }) {
     }
   };
 
-  const handleSubmit = () => {
-    console.log('Formulaire soumis:', formData);
-    navigation.navigate('Login');
+  const handleSubmit = async () => {
+    if (!validateForm()) return;
+
+    setIsLoading(true);
+    try {
+      // Enregistrer l'utilisateur
+      const response = await axios.post('http://169.254.21.159:3000/api/auth/register', {
+        ...formData,
+        avatar: formData.avatar ? formData.avatar : null
+      });
+
+      // Sauvegarder le token et les informations
+      const { token, user } = response.data;
+      await AsyncStorage.setItem('userToken', token);
+      await AsyncStorage.setItem('userInfo', JSON.stringify(user));
+
+      // Rediriger vers la page de connexion
+      navigation.replace('Login');
+    } catch (error) {
+      console.error('Erreur d\'inscription:', error);
+      Alert.alert('Erreur', error.response?.data?.message || 'Erreur lors de l\'inscription');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -88,6 +162,40 @@ export default function Formulaire({ navigation }) {
           placeholder="Prénom"
           value={formData.prenom}
           onChangeText={(text) => handleInputChange('prenom', text)}
+        />
+      </View>
+
+      {/* Email */}
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={formData.email}
+          onChangeText={(text) => handleInputChange('email', text)}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+      </View>
+
+      {/* Mot de passe */}
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Mot de passe"
+          value={formData.password}
+          onChangeText={(text) => handleInputChange('password', text)}
+          secureTextEntry
+        />
+      </View>
+
+      {/* Confirmation du mot de passe */}
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Confirmer le mot de passe"
+          value={formData.confirmPassword}
+          onChangeText={(text) => handleInputChange('confirmPassword', text)}
+          secureTextEntry
         />
       </View>
 
@@ -140,8 +248,20 @@ export default function Formulaire({ navigation }) {
       </View>
 
       {/* Bouton continuer */}
-      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-        <Text style={styles.submitText}>Continuer</Text>
+      <TouchableOpacity 
+        style={styles.submitButton} 
+        onPress={handleSubmit}
+        disabled={isLoading}
+      >
+        {isLoading ? <ActivityIndicator color="white" /> : <Text style={styles.submitText}>Créer mon compte</Text>}
+      </TouchableOpacity>
+
+      {/* Lien vers la connexion */}
+      <TouchableOpacity 
+        style={styles.backButton} 
+        onPress={() => navigation.navigate('Login')}
+      >
+        <Text style={styles.backText}>Déjà un compte ? Connectez-vous</Text>
       </TouchableOpacity>
     </ScrollView>
   );

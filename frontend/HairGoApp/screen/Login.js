@@ -7,9 +7,17 @@ import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
+// Ajouter au début du fichier
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function Login({ navigation }) {
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [remember, setRemember] = useState(false);
   const CustomCheckBox = ({ value, onValueChange }) => (
     <TouchableOpacity
@@ -19,7 +27,45 @@ export default function Login({ navigation }) {
       {value && <View style={styles.checkboxTick} />}
     </TouchableOpacity>
   );
-  
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      setError('Veuillez remplir tous les champs');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Afficher les données envoyées
+      console.log('Données de connexion:', { email, password });
+
+      // Configurer l'entête Content-Type
+      const config = {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+
+      const response = await axios.post('http://169.254.21.159:3000/api/auth/login', {
+        email,
+        password,
+      }, config);
+
+      console.log('Réponse du serveur:', response.data);
+      const { token, user } = response.data;
+      await AsyncStorage.setItem('userToken', token);
+      await AsyncStorage.setItem('userInfo', JSON.stringify(user));
+      navigation.replace('Welcome');
+    } catch (error) {
+      console.error('Erreur de connexion:', error);
+      console.error('Message d\'erreur:', error.response?.data?.message);
+      console.error('Status:', error.response?.status);
+      console.error('Données de réponse:', error.response?.data);
+      setError(error.response?.data?.message || 'Email ou mot de passe incorrect');
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
@@ -30,21 +76,21 @@ export default function Login({ navigation }) {
 
       <View style={styles.inputContainer}>
         <Entypo name="email" size={20} color="#aaa" style={styles.icon} />
-        <TextInput placeholder="Email" style={styles.input} placeholderTextColor="#999" />
+        <TextInput placeholder="Email" style={styles.input} placeholderTextColor="#999" value={email} onChangeText={setEmail} />
       </View>
 
       <View style={styles.inputContainer}>
         <FontAwesome name="lock" size={20} color="#aaa" style={styles.icon} />
-        <TextInput placeholder="Mot de passe" style={styles.input} secureTextEntry placeholderTextColor="#999" />
+        <TextInput placeholder="Mot de passe" style={styles.input} secureTextEntry placeholderTextColor="#999" value={password} onChangeText={setPassword} />
       </View>
 
       <View style={styles.rememberContainer}>
-      <CustomCheckBox value={remember} onValueChange={setRemember} />
+        <CustomCheckBox value={remember} onValueChange={setRemember} />
 
         <Text style={styles.rememberText}>Me rappeler</Text>
       </View>
 
-      <TouchableOpacity style={styles.loginButton}>
+      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginButtonText}>Se connecter</Text>
       </TouchableOpacity>
 
