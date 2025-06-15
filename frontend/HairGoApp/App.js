@@ -27,46 +27,56 @@ const AuthStack = () => {
   );
 };
 
+const TabNavigator = () => (
+  <Tab.Navigator
+    screenOptions={({ route }) => ({
+      tabBarIcon: ({ focused, color, size }) => {
+        let iconName;
+
+        switch (route.name) {
+          case 'Accueil':
+            iconName = focused ? 'home' : 'home-outline';
+            break;
+          case 'Carte':
+            iconName = focused ? 'location' : 'location-outline';
+            break;
+          case 'Calendrier':
+            iconName = focused ? 'calendar' : 'calendar-outline';
+            break;
+          case 'Favoris':
+            iconName = focused ? 'bookmark' : 'bookmark-outline';
+            break;
+          case 'Profil':
+            iconName = focused ? 'person' : 'person-outline';
+            break;
+          default:
+            iconName = 'home-outline';
+        }
+
+        return <Icon name={iconName} size={24} color={color} />;
+      },
+      tabBarActiveTintColor: '#FD3C4A',
+      tabBarInactiveTintColor: 'gray',
+      headerShown: false,
+    })}
+  >
+    <Tab.Screen name="Accueil" component={Home} />
+    <Tab.Screen name="Carte" component={MapScreen} />
+    <Tab.Screen name="Calendrier" component={CalendarScreen} />
+    <Tab.Screen name="Favoris" component={FavoritesScreen} />
+    <Tab.Screen name="Profil" component={ProfileScreen} />
+  </Tab.Navigator>
+);
+
 const AppStack = () => {
   return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-
-          switch (route.name) {
-            case 'Accueil':
-              iconName = focused ? 'home' : 'home-outline';
-              break;
-            case 'Carte':
-              iconName = focused ? 'location' : 'location-outline';
-              break;
-            case 'Calendrier':
-              iconName = focused ? 'calendar' : 'calendar-outline';
-              break;
-            case 'Favoris':
-              iconName = focused ? 'bookmark' : 'bookmark-outline';
-              break;
-            case 'Profil':
-              iconName = focused ? 'person' : 'person-outline';
-              break;
-            default:
-              iconName = 'home-outline';
-          }
-
-          return <Icon name={iconName} size={24} color={color} />;
-        },
-        tabBarActiveTintColor: '#FD3C4A',
-        tabBarInactiveTintColor: 'gray',
-        headerShown: false,
-      })}
-    >
-      <Tab.Screen name="Accueil" component={Home} />
-      <Tab.Screen name="Carte" component={MapScreen} />
-      <Tab.Screen name="Calendrier" component={CalendarScreen} />
-      <Tab.Screen name="Favoris" component={FavoritesScreen} />
-      <Tab.Screen name="Profil" component={ProfileScreen} />
-    </Tab.Navigator>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen 
+        name="Tab" 
+        component={TabNavigator}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
   );
 };
 
@@ -86,6 +96,9 @@ function AppWithAuth() {
   if (loading) {
     return null;
   }
+
+  // Add a console log to verify auth state
+  console.log('Auth state:', { loading, user });
 
   return user ? <AppStack /> : <AuthStack />;
 }

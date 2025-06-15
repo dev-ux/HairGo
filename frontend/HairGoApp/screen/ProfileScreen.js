@@ -13,14 +13,14 @@ export default function ProfileScreen({ navigation }) {
       navigation.reset({
         index: 0,
         routes: [{ name: 'Login' }]
-      });
+      }); 
     } catch (error) {
       console.error('Erreur lors de la déconnexion:', error);
     }
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container}> 
       {/* HEADER */}
       <View style={styles.header}>
         <View style={styles.headerTop}>

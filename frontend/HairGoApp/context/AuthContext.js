@@ -39,10 +39,17 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (userInfo, userToken) => {
     try {
+      // Update local storage
       await AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
       await AsyncStorage.setItem('userToken', userToken);
+      
+      // Update auth state
       setUser(userInfo);
       setToken(userToken);
+      setLoading(false);
+      
+      // Return success
+      return true;
     } catch (error) {
       console.error('Erreur lors de la connexion:', error);
       throw error;

@@ -34,12 +34,18 @@ export default function Home({ navigation }) {
   const loadBarbers = async () => {
     try {
       const token = await AsyncStorage.getItem('userToken');
-      const response = await axios.get('http://169.254.21.159:3000/api/barbers', {
+      const response = await axios.get('http://localhost:3000/api/barbers', {
         headers: { Authorization: `Bearer ${token}` },
+        timeout: 10000, // 10 second timeout
       });
       setBarbers(response.data);
     } catch (err) {
       console.error('Erreur API :', err);
+      if (err.code === 'ECONNABORTED') {
+        console.error('La requête a expiré');
+      } else {
+        console.error('Erreur serveur:', err.response?.data || err.message);
+      }
     } finally {
       setLoading(false);
     }

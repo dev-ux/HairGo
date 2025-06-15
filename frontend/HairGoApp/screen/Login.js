@@ -1,24 +1,20 @@
 import React, { useState } from 'react';
-import {
-  View, Text, TextInput, StyleSheet,
-  TouchableOpacity, Image
+import {Text, TextInput, StyleSheet,
+  TouchableOpacity, View
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { FontAwesome } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons';
-import { Entypo } from '@expo/vector-icons';
 // Ajouter au début du fichier
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { Entypo } from '@expo/vector-icons';
 
 export default function Login({ navigation }) {
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(''); 
   const [remember, setRemember] = useState(false);
+
   const CustomCheckBox = ({ value, onValueChange }) => (
     <TouchableOpacity
       onPress={() => onValueChange(!value)}
@@ -46,16 +42,16 @@ export default function Login({ navigation }) {
         }
       };
 
-      const response = await axios.post('http://169.254.21.159:3000/api/auth/login', {
+      const response = await axios.post('http://localhost:3000/api/auth/login', {
         email,
         password,
       }, config);
 
       console.log('Réponse du serveur:', response.data);
       const { token, user } = response.data;
-      await AsyncStorage.setItem('userToken', token);
-      await AsyncStorage.setItem('userInfo', JSON.stringify(user));
-      navigation.replace('Home');
+      
+      // Use AuthContext login function
+      await login(response.data.user, response.data.token);
     } catch (error) {
       console.error('Erreur de connexion:', error);
       console.error('Message d\'erreur:', error.response?.data?.message);
