@@ -1,40 +1,70 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Notification({ navigation }) {
-  const [notifications, setNotifications] = useState([
-    {
-      id: '1',
-      title: 'Nouveau barbier disponible',
-      message: 'Un nouveau barbier expert en coupes modernes est disponible près de chez vous.',
-      date: 'Il y a 2 heures',
-      read: false
-    },
-    {
-      id: '2',
-      title: 'Promotion spéciale',
-      message: 'Profitez de 20% de réduction sur votre prochaine coupe de cheveux.',
-      date: 'Il y a 1 jour',
-      read: true
-    },
-    {
-      id: '3',
-      title: 'Rappel de rendez-vous',
-      message: 'Votre rendez-vous avec Jean Dupont est demain à 15h.',
-      date: 'Il y a 3 heures',
-      read: false
-    }
-  ]);
+  const [notifications, setNotifications] = useState([]);
 
-  const markAsRead = (id) => {
-    setNotifications(notifications.map(notification => 
-      notification.id === id ? { ...notification, read: true } : notification
-    ));
+  useEffect(() => {
+    loadNotifications();
+  }, []);
+
+  const loadNotifications = async () => {
+    try {
+      const savedNotifications = await AsyncStorage.getItem('notifications');
+      if (savedNotifications) {
+        setNotifications(JSON.parse(savedNotifications));
+      } else {
+        setNotifications([
+          {
+            id: '1',
+            title: 'Nouveau barbier disponible',
+            message: 'Un nouveau barbier expert en coupes modernes est disponible près de chez vous.',
+            date: 'Il y a 2 heures',
+            read: false
+          },
+          {
+            id: '2',
+            title: 'Promotion spéciale',
+            message: 'Profitez de 20% de réduction sur votre prochaine coupe de cheveux.',
+            date: 'Il y a 1 jour',
+            read: true
+          },
+          {
+            id: '3',
+            title: 'Rappel de rendez-vous',
+            message: 'Votre rendez-vous avec Jean Dupont est demain à 15h.',
+            date: 'Il y a 3 heures',
+            read: false
+          }
+        ]);
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des notifications:', error);
+    }
   };
 
-  const markAllAsRead = () => {
-    setNotifications(notifications.map(notification => ({ ...notification, read: true })));
+  const markAsRead = async (id) => {
+    const updatedNotifications = notifications.map(notification => 
+      notification.id === id ? { ...notification, read: true } : notification
+    );
+    setNotifications(updatedNotifications);
+    try {
+      await AsyncStorage.setItem('notifications', JSON.stringify(updatedNotifications));
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde des notifications:', error);
+    }
+  };
+
+  const markAllAsRead = async () => {
+    const updatedNotifications = notifications.map(notification => ({ ...notification, read: true }));
+    setNotifications(updatedNotifications);
+    try {
+      await AsyncStorage.setItem('notifications', JSON.stringify(updatedNotifications));
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde des notifications:', error);
+    }
   };
 
   const renderNotification = ({ item }) => (
