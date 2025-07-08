@@ -10,5 +10,17 @@
     "genre": "masculin",
     "avatar": null,
     "createdAt": "2025-06-14T02:39:51.949Z"
+  },
+  {
+    "id": "1751978065527",
+    "email": "junior@gmail.com",
+    "password": "$2b$10$BUEqwdJCwMICbZXqmQIE0eAUCvDitjoWZd1sWGut7O1gWbBR8aJxO",
+    "nom": "Junior",
+    "prenom": "Junior",
+    "dateNaissance": "09/06/1999",
+    "telephone": "+330774799426",
+    "genre": "masculin",
+    "avatar": null,
+    "createdAt": "2025-07-08T12:34:25.527Z"
   }
 ]

@@ -100,9 +100,11 @@ export default function Formulaire({ navigation }) {
     setIsLoading(true);
     try {
       // Enregistrer l'utilisateur
-      const response = await axios.post('http://169.254.21.159:3000/api/auth/register', {
+      const response = await axios.post('http://192.168.0.5:3000/api/auth/register', {
         ...formData,
         avatar: formData.avatar ? formData.avatar : null
+      }, {
+        timeout: 30000 // 30 secondes
       });
 
       // Sauvegarder le token et les informations

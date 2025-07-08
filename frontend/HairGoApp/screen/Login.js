@@ -6,7 +6,8 @@ import { Ionicons } from '@expo/vector-icons';
 // Ajouter au début du fichier
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Entypo } from '@expo/vector-icons';
+import { Entypo, FontAwesome, AntDesign } from '@expo/vector-icons';
+
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState('');
@@ -50,8 +51,12 @@ export default function Login({ navigation }) {
       console.log('Réponse du serveur:', response.data);
       const { token, user } = response.data;
       
-      // Use AuthContext login function
-      await login(response.data.user, response.data.token);
+      // Stocker le token et les informations de l'utilisateur
+      await AsyncStorage.setItem('userToken', token);
+      await AsyncStorage.setItem('userData', JSON.stringify(user));
+      
+      // Rediriger vers l'écran principal
+      navigation.replace('Home');
     } catch (error) {
       console.error('Erreur de connexion:', error);
       console.error('Message d\'erreur:', error.response?.data?.message);
