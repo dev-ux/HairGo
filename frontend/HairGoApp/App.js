@@ -1,8 +1,10 @@
 import React from 'react';
+import { View, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Notification from './screen/Notification';
 
 import Home from './screen/Home';
 import MapScreen from './screen/MapScreen';
@@ -69,13 +71,49 @@ const TabNavigator = () => (
 );
 
 const AppStack = () => {
+  const { user } = useAuth();
+
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen 
-        name="Tab" 
-        component={TabNavigator}
-        options={{ headerShown: false }}
-      />
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      {!user ? (
+        <Stack.Screen name="Auth" component={AuthStack} />
+      ) : (
+        <>
+          <Stack.Screen name="Tab" 
+            component={TabNavigator}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen 
+            name="Notification" 
+            component={Notification}
+            options={{
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: '#fff',
+                shadowColor: '#000',
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.1,
+                shadowRadius: 4,
+                elevation: 3,
+              },
+              headerTitle: 'Notifications',
+              headerTitleStyle: {
+                fontSize: 20,
+                fontWeight: '600',
+              },
+            }}
+          />
+        </>
+      )}
     </Stack.Navigator>
   );
 };

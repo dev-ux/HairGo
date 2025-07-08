@@ -77,7 +77,9 @@ export default function Home({ navigation }) {
       <View style={styles.header}>
         <Image source={require('../assets/user-icon.png')} style={styles.userIcon} />
         <View style={styles.headerIcons}>
+          <TouchableOpacity onPress={() => navigation.navigate('Notification')}>
           <Icon name="notifications-outline" size={22} />
+        </TouchableOpacity>
           <Icon name="bookmark-outline" size={22} style={{ marginLeft: 15 }} />
         </View>
       </View>
